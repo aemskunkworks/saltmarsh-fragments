@@ -1,0 +1,123 @@
+# Action 2 — Validate + classify on every PR touching fragments or the locked layer.
+#
+# Three required status checks (see .github/rulesets/main-protection.json):
+#   schema      — JSON Schema validation (deterministic, can fail)
+#   brand-lint  — glossary lint (deterministic, can fail)
+#   classify    — semantic diff → tier; posts the PR comment; labels; auto-merges auto-tier
+#
+# The LLM conformance pass is a separate, optional job that can only RAISE the
+# tier by writing llm-review.json. It is never a required check.
+name: validate-classify
+on:
+  pull_request:
+    paths: ["fragments/**", "models/**", "brand/**", "scripts/**"]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  changed:
+    runs-on: ubuntu-latest
+    outputs:
+      fragments: ${{ steps.list.outputs.fragments }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - id: list
+        run: |
+          FILES=$(git diff --name-only --diff-filter=AMR origin/${{ github.base_ref }}...HEAD -- 'fragments/**/*.json' | jq -R -s -c 'split("\n") | map(select(length>0))')
+          echo "fragments=$FILES" >> "$GITHUB_OUTPUT"
+
+  schema:
+    name: schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: node scripts/validate.mjs
+
+  brand-lint:
+    name: brand-lint
+    needs: changed
+    if: needs.changed.outputs.fragments != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: node scripts/lint-brand.mjs $(echo '${{ needs.changed.outputs.fragments }}' | jq -r '.[]')
+
+  llm-conformance:
+    # OPTIONAL, raise-only. Stub: writes an advisory. Replace with a Stardust call.
+    name: llm-conformance (advisory)
+    needs: changed
+    if: needs.changed.outputs.fragments != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p .ci
+          echo '{"why":"stub — brand-profile conformance not yet wired; no raise"}' > .ci/llm-review.json
+      - uses: actions/upload-artifact@v4
+        with: { name: llm-review, path: .ci/llm-review.json }
+
+  classify:
+    name: classify
+    needs: [changed, schema, brand-lint, llm-conformance]
+    if: needs.changed.outputs.fragments != '[]'
+    runs-on: ubuntu-latest
+    outputs:
+      tier: ${{ steps.tier.outputs.tier }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with: { name: llm-review, path: .ci }
+
+      - name: Semantic diff + classify each changed fragment
+        id: tier
+        env: { LLM_REVIEW_JSON: .ci/llm-review.json }
+        run: |
+          set -euo pipefail
+          mkdir -p .ci/reports
+          WORST=auto
+          : > .ci/comment.md
+          for f in $(echo '${{ needs.changed.outputs.fragments }}' | jq -r '.[]'); do
+            if git cat-file -e origin/${{ github.base_ref }}:"$f" 2>/dev/null; then
+              git show origin/${{ github.base_ref }}:"$f" > .ci/base.json; BASE=.ci/base.json
+            else BASE=none; fi
+            node scripts/classify.mjs "$f" --base "$BASE" --out ".ci/reports/$(basename "$f")" >> .ci/comment.md
+            echo >> .ci/comment.md
+            T=$(jq -r .tier ".ci/reports/$(basename "$f")")
+            case "$T" in regulated) WORST=regulated;; human) [ "$WORST" = regulated ] || WORST=human;; esac
+          done
+          echo "tier=$WORST" >> "$GITHUB_OUTPUT"
+
+      - name: Post / update PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with: { header: classification, path: .ci/comment.md }
+
+      - name: Label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tier = '${{ steps.tier.outputs.tier }}';
+            const { owner, repo } = context.repo; const issue_number = context.issue.number;
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
+            for (const l of labels.filter(l => l.name.startsWith('review:')))
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name: l.name }).catch(() => {});
+            await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [`review:${tier}`] });
+
+      - name: Enable auto-merge for auto-tier
+        if: steps.tier.outputs.tier == 'auto'
+        env:
+          GH_TOKEN: ${{ secrets.GOVERNANCE_APP_TOKEN || secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --squash || echo "auto-merge unavailable (needs bypass actor / repo setting)"

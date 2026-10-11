@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fragments.saltmarshtx.example/models/product-claim/1.0.0",
+  "title": "Product Claim Fragment",
+  "description": "One MLR-reviewable promotional claim about Tarnexa (quilvecitinib), reusable across HCP web, rep email, MSL/agent assist and chat. A claim is a statement plus the references that substantiate it plus the safety context it must travel with. Field-level `x-review` tiers drive the diff classifier; `x-channel` lists where a field may render.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "model", "schemaVersion", "author", "source", "effectiveFrom", "scope", "content", "attributes", "provenance"],
+
+  "$defs": {
+    "reviewTier": {
+      "description": "Minimum review tier for a change to this field. The classifier may RAISE a fragment's tier above the max of its changed fields; it may never lower below it.",
+      "enum": ["auto", "human", "regulated"]
+    },
+    "channel": { "enum": ["hcp-web", "rep-email", "msl-assist", "chat", "print"] },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 3, "maxLength": 64 },
+    "refId": { "type": "string", "pattern": "^REF-\\d{3,4}$", "description": "Reference id from brand/references.md (the approved reference library)." },
+    "shortCopy": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "bodyCopy": { "type": "string", "minLength": 1, "maxLength": 1200 },
+    "loading": {
+      "description": "Q-matrix loading: does this attribute drive engagement with this fragment? 0 = no, 1 = yes. Fractional values reserved for calibrated discrimination later.",
+      "type": "number", "minimum": 0, "maximum": 1
+    }
+  },
+
+  "properties": {
+    "id": { "$ref": "#/$defs/slug", "description": "Stable fragment identifier; also the filename. Never changes after first merge.", "x-review": "regulated" },
+    "model": { "const": "product-claim", "x-review": "regulated" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "x-review": "human" },
+
+    "author": {
+      "description": "IMS user ID of the human author (1:1 passthrough for the PoC; pseudonymize here later). Stored ONLY in this field, never in commit metadata.",
+      "type": "string", "minLength": 1, "x-review": "auto", "x-pii": true
+    },
+    "source": {
+      "type": "object", "additionalProperties": false, "required": ["pipeline", "assetId"],
+      "properties": {
+        "pipeline": { "enum": ["express-addon", "figma", "cc-libraries", "manual"] },
+        "assetId": { "type": "string" },
+        "templateId": { "type": "string", "description": "Constrained template used, if any. Template-bound sources earn reputation faster." }
+      },
+      "x-review": "auto"
+    },
+
+    "effectiveFrom": { "type": "string", "format": "date", "description": "Earliest date this content may be published. Approval and release are separate decisions.", "x-review": "regulated" },
+    "effectiveTo":   { "type": ["string", "null"], "format": "date", "x-review": "regulated" },
+
+    "scope": {
+      "description": "What the claim is allowed to be about. Changing scope changes what the references must support.",
+      "type": "object", "additionalProperties": false,
+      "required": ["indication", "population", "claimType"],
+      "properties": {
+        "indication": { "const": "Moderately to severely active rheumatoid arthritis in adults", "x-review": "regulated" },
+        "population": {
+          "description": "Sub-population the claim is scoped to. TNF-IR is the labeled population.",
+          "enum": ["tnf-ir", "tnf-ir-and-csdmard-ir", "all-labeled"],
+          "x-review": "regulated"
+        },
+        "claimType": {
+          "enum": ["efficacy", "safety", "mechanism", "dosing-administration", "access-support", "patient-identification"],
+          "x-review": "regulated"
+        },
+        "comparator": {
+          "description": "If a comparison is made, what against. Named marketed competitors are forbidden (see glossary).",
+          "enum": ["none", "placebo", "csdmard-background", "prior-tnf"],
+          "x-review": "regulated"
+        }
+      }
+    },
+
+    "content": {
+      "type": "object", "additionalProperties": false,
+      "required": ["headline", "claimText", "referenceIds", "safetyStatementId"],
+      "properties": {
+        "headline":  { "$ref": "#/$defs/shortCopy", "description": "Attention line. Not itself a claim; must not state a result.", "x-review": "auto", "x-channel": ["hcp-web", "rep-email", "chat"] },
+        "lede":      { "$ref": "#/$defs/bodyCopy",  "description": "Plain-language framing. May paraphrase claimText; may not add results.", "x-review": "auto", "x-channel": ["hcp-web", "rep-email"] },
+        "claimText": {
+          "$ref": "#/$defs/bodyCopy",
+          "description": "The substantiated statement, verbatim as approved. Every number in it must appear in a cited reference.",
+          "x-review": "regulated", "x-channel": ["hcp-web", "rep-email", "msl-assist", "chat", "print"]
+        },
+        "referenceIds": {
+          "description": "References that substantiate claimText. Lint fails on unknown ids and on an efficacy claim with no pivotal-trial reference.",
+          "type": "array", "items": { "$ref": "#/$defs/refId" }, "minItems": 1, "uniqueItems": true,
+          "x-review": "regulated"
+        },
+        "dataPoints": {
+          "description": "Structured copy of each figure in claimText so the classifier can diff numbers, not prose.",
+          "type": "array", "maxItems": 8,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["label", "value", "referenceId"],
+            "properties": {
+              "label": { "$ref": "#/$defs/shortCopy" },
+              "value": { "type": "string", "maxLength": 40 },
+              "timepoint": { "type": "string", "maxLength": 40 },
+              "referenceId": { "$ref": "#/$defs/refId" }
+            }
+          },
+          "x-review": "regulated", "x-channel": ["hcp-web", "msl-assist", "print"]
+        },
+        "safetyStatementId": {
+          "description": "Id of the required safety statement from brand/glossary.md that must travel with this claim type.",
+          "$ref": "#/$defs/slug", "x-review": "regulated"
+        },
+        "fairBalanceText": {
+          "$ref": "#/$defs/bodyCopy",
+          "description": "Channel-specific fair balance copy when the full ISI cannot render (email, chat). Verbatim from glossary.",
+          "x-review": "regulated", "x-channel": ["rep-email", "chat"]
+        },
+        "ctaLabel": { "type": "string", "maxLength": 40, "x-review": "auto", "x-channel": ["hcp-web", "rep-email"] },
+        "ctaUrl":   { "type": "string", "format": "uri", "x-review": "human", "x-channel": ["hcp-web", "rep-email"] },
+        "mslTalkingPoints": {
+          "description": "Guidance for MSLs / inside reps. Not HCP-facing.",
+          "type": "array", "items": { "$ref": "#/$defs/shortCopy" }, "maxItems": 6,
+          "x-review": "human", "x-channel": ["msl-assist"]
+        },
+        "kolQuote": {
+          "description": "Attributed expert quote. Fictional KOL for the demo.",
+          "type": "object", "additionalProperties": false, "required": ["text", "attribution"],
+          "properties": { "text": { "$ref": "#/$defs/bodyCopy" }, "attribution": { "$ref": "#/$defs/shortCopy" } },
+          "x-review": "human", "x-channel": ["hcp-web"]
+        }
+      }
+    },
+
+    "attributes": {
+      "description": "Q-matrix row for Audience of One. Which latent HCP attributes drive engagement with this fragment. Registry: models/attributes.json.",
+      "type": "object", "additionalProperties": false,
+      "required": ["evidenceThreshold", "unmetNeed", "clinicalFit", "access"],
+      "properties": {
+        "evidenceThreshold": { "$ref": "#/$defs/loading" },
+        "unmetNeed":         { "$ref": "#/$defs/loading" },
+        "clinicalFit":       { "$ref": "#/$defs/loading" },
+        "access":            { "$ref": "#/$defs/loading" },
+        "evidenceDepth": {
+          "description": "Rung on the evidence ladder this fragment represents (polytomous item). 1 summary · 2 pivotal · 3 subgroup/TNF-IR · 4 safety tables · 5 real-world · 6 MSL request.",
+          "type": "integer", "minimum": 1, "maximum": 6
+        },
+        "interactions": {
+          "type": "array", "items": { "type": "string", "pattern": "^[a-zA-Z]+(\\*[a-zA-Z]+)+$" }, "uniqueItems": true
+        }
+      },
+      "x-review": "human"
+    },
+
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["createdAt", "generator", "dataStatus"],
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" },
+        "generator": { "type": "string" },
+        "dataStatus": { "const": "fictional-demo-data", "description": "Every figure in this repo is invented for a demo. This field makes that machine-checkable." },
+        "brandProfileVersion": { "type": "string" },
+        "glossaryVersion": { "type": "string" },
+        "mlrJobId": { "type": "string", "description": "Downstream MLR system id once approved (roadmap)." },
+        "supersedes": { "$ref": "#/$defs/slug" }
+      },
+      "x-review": "auto"
+    }
+  },
+
+  "allOf": [
+    {
+      "$comment": "Efficacy and safety claims must carry structured data points so numbers are diffed as numbers.",
+      "if": { "properties": { "scope": { "properties": { "claimType": { "enum": ["efficacy", "safety"] } } } } },
+      "then": { "properties": { "content": { "required": ["dataPoints"] } } }
+    },
+    {
+      "$comment": "Anything that renders in email or chat must carry fair-balance text, since the full ISI cannot.",
+      "if": { "properties": { "content": { "required": ["ctaUrl"] } } },
+      "then": { "properties": { "content": { "required": ["fairBalanceText"] } } }
+    }
+  ]
+}

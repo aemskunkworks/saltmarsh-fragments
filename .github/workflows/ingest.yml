@@ -1,0 +1,66 @@
+# Action 1 — Ingest: a source pipeline (Express add-on, Figma, CC Libraries)
+# posts a fragment; we commit it to a branch as the bot and open a PR.
+#
+# Trigger from the source with:
+#   POST /repos/{owner}/{repo}/dispatches
+#   { "event_type": "fragment.submitted",
+#     "client_payload": { "model": "claim-benefit", "fragment": { ...json... } } }
+#
+# The human author lives ONLY in fragment.author (IMS user ID). The commit
+# author is the bot. No Co-authored-by trailer — that would leak the identity
+# we intend to pseudonymize later.
+name: ingest
+on:
+  repository_dispatch:
+    types: [fragment.submitted]
+  workflow_dispatch:
+    inputs:
+      model: { description: "Model name", required: true, default: "claim-benefit" }
+      fragment: { description: "Fragment JSON (string)", required: true }
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Materialize fragment
+        id: frag
+        env:
+          MODEL: ${{ github.event.client_payload.model || inputs.model }}
+          FRAGMENT: ${{ toJSON(github.event.client_payload.fragment) || inputs.fragment }}
+        run: |
+          set -euo pipefail
+          # workflow_dispatch passes a string; repository_dispatch passes an object we re-serialize
+          if [ "${FRAGMENT:0:1}" = '"' ]; then FRAGMENT=$(echo "$FRAGMENT" | jq -r .); fi
+          ID=$(echo "$FRAGMENT" | jq -r .id)
+          SOURCE=$(echo "$FRAGMENT" | jq -r .source.pipeline)
+          mkdir -p "fragments/$MODEL"
+          echo "$FRAGMENT" | jq -S . > "fragments/$MODEL/$ID.json"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+          echo "source=$SOURCE" >> "$GITHUB_OUTPUT"
+          echo "path=fragments/$MODEL/$ID.json" >> "$GITHUB_OUTPUT"
+          echo "branch=content/$SOURCE/$ID-$(date +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR as the governance bot
+        uses: peter-evans/create-pull-request@v6
+        with:
+          # Use a GitHub App token (secrets.GOVERNANCE_APP_TOKEN) so the bot can be a
+          # ruleset bypass actor for auto-tier merges. GITHUB_TOKEN cannot.
+          token: ${{ secrets.GOVERNANCE_APP_TOKEN || secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.frag.outputs.branch }}
+          commit-message: "content(${{ github.event.client_payload.model || inputs.model }}): ${{ steps.frag.outputs.id }} via ${{ steps.frag.outputs.source }}"
+          committer: "fragments-bot <fragments-bot@users.noreply.github.com>"
+          author: "fragments-bot <fragments-bot@users.noreply.github.com>"
+          title: "[${{ steps.frag.outputs.source }}] ${{ steps.frag.outputs.id }}"
+          body: |
+            Submitted by source pipeline `${{ steps.frag.outputs.source }}`.
+            Fragment: `${{ steps.frag.outputs.path }}`
+
+            Classification, diff and reputation badges will be posted by the `validate-classify` workflow.
+          labels: fragment, source:${{ steps.frag.outputs.source }}
+          delete-branch: true

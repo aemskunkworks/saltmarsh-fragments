@@ -1,0 +1,47 @@
+# Action 3 — Publish on merge: main is "approved and available for publishing".
+# Push fragments to DA as sheets and PREVIEW. Going live on aem.live is a
+# separate human/scheduled step (publish scheduling is roadmap).
+# Also recomputes reputation from the merge that just happened.
+name: publish
+on:
+  push:
+    branches: [main]
+    paths: ["fragments/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: { group: publish-main, cancel-in-progress: false }
+
+jobs:
+  publish-to-da:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Build sheets and push to DA (preview only)
+        env:
+          DA_ORG: ${{ vars.DA_ORG }}
+          DA_REPO: ${{ vars.DA_REPO }}
+          DA_IMS_TOKEN: ${{ secrets.DA_IMS_TOKEN }}
+        run: node scripts/publish-da.mjs
+
+  update-reputation:
+    runs-on: ubuntu-latest
+    needs: publish-to-da
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: node scripts/update-reputation.mjs
+        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+      - name: Commit reputation.json if changed
+        run: |
+          git config user.name fragments-bot
+          git config user.email fragments-bot@users.noreply.github.com
+          git add reputation/reputation.json
+          git diff --cached --quiet || git commit -m "chore(reputation): recompute after ${GITHUB_SHA::7}" && git push || true

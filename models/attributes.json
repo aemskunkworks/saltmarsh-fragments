@@ -1,0 +1,12 @@
+{
+  "$comment": "Attribute registry for the Audience of One Q-matrix. One entry per latent attribute. Adding an attribute = new PR touching this file AND every fragment's attributes block (CI enforces via schema required[]).",
+  "version": "0.1.0",
+  "attributes": [
+    { "id": "evidenceThreshold", "label": "Evidence threshold before trial", "levels": 2, "note": "Observed via depth reached in the evidence ladder. Confounded with professional norm; do not present as risk aversion." },
+    { "id": "unmetNeed",         "label": "Unmet need in panel",            "levels": 2, "note": "Dissatisfaction with current standard of care. Candidate for 3 levels (none/some/many) after PoC." },
+    { "id": "clinicalFit",       "label": "Clinical fit (eligible patients)", "levels": 2, "note": "Practice-level in reality; individual-level for PoC." },
+    { "id": "access",            "label": "Access (coverage / prior auth)", "levels": 2, "note": "Practice-level in reality; bleeds into evidenceThreshold via PA burden." }
+  ],
+  "structuralModel": "lcdm",
+  "attributeCorrelation": "estimated"
+}

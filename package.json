@@ -1,0 +1,19 @@
+{
+  "name": "saltmarsh-fragments",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Git-sourced MLR product-claim fragments for Edge Delivery Services / DA.live: schema validation, diff-first review classification, reputation-aware routing. Fictional brand (Saltmarsh Therapeutics / Tarnexa).",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "lint:brand": "node scripts/lint-brand.mjs fragments/*/*.json",
+    "classify": "node scripts/classify.mjs",
+    "publish:dry": "node scripts/publish-da.mjs",
+    "check": "npm run validate && npm run lint:brand"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "engines": { "node": ">=20" }
+}

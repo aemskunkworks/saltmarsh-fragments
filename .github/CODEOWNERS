@@ -1,0 +1,21 @@
+# CODEOWNERS — who must approve what.
+# PoC: one reviewer group (@saltmarsh/mlr-review = MLR). Adding a second group
+# (legal, regulatory, medical affairs) is one more line per path; dual sign-off is a ruleset change
+# (required_approving_review_count: 2), not an architecture change.
+#
+# Replace the team slugs with real GitHub teams in your org.
+
+# Content fragments — the reviewer group approves every human/regulated-tier PR.
+/fragments/                         @saltmarsh/mlr-review
+
+# Locked layer — rules about the content get at least the same review as the content.
+/brand/                             @saltmarsh/mlr-review @saltmarsh/medical-affairs
+/models/                            @saltmarsh/mlr-review @saltmarsh/platform
+
+# Pipeline — platform owns the automation; content-review has no say over code.
+/.github/                           @saltmarsh/platform
+/scripts/                           @saltmarsh/platform
+/plugin/                            @saltmarsh/platform
+
+# Reputation is machine-written; humans should not hand-edit it.
+/reputation/                        @saltmarsh/platform

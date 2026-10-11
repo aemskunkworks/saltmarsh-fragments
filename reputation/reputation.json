@@ -1,0 +1,42 @@
+{
+  "$comment": "MACHINE-WRITTEN by scripts/update-reputation.mjs on every merge to main. Do not hand-edit. Scores are simple weighted rates in [0,1]; the classifier uses them as a RAISE-ONLY input. Seeded so the demo can show one trusted author and one cold-start author.",
+  "version": 1,
+  "computedAt": "2026-10-09T08:00:00Z",
+  "thresholds": {
+    "authorAutoMin": 0.7,
+    "sourceAutoMin": 0.7
+  },
+  "weights": {
+    "mergedWithoutReviewerEdits": 0.5,
+    "notReverted": 0.3,
+    "schemaPassFirstTry": 0.2
+  },
+  "authors": {
+    "A1B2C3D4E5F6@AdobeID": {
+      "fragmentsMerged": 12,
+      "mergedWithoutReviewerEdits": 11,
+      "reverts": 0,
+      "schemaPassFirstTry": 12,
+      "medianReviewHours": 6.5,
+      "score": 0.96
+    }
+  },
+  "sources": {
+    "express-addon": {
+      "submissions": 14,
+      "schemaFailures": 1,
+      "autoTiered": 9,
+      "reverts": 0,
+      "templates": { "claim-benefit-card-v1": { "submissions": 14 } },
+      "score": 0.93
+    },
+    "manual": {
+      "submissions": 3,
+      "schemaFailures": 2,
+      "autoTiered": 0,
+      "reverts": 1,
+      "templates": {},
+      "score": 0.31
+    }
+  }
+}
