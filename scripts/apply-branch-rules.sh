@@ -25,4 +25,4 @@ else
   echo "Creating ruleset on $REPO"
   gh api -X POST "repos/$REPO/rulesets" --input - <<<"$payload" >/dev/null
 fi
-echo "Done. Required checks: schema, brand-lint, classify. Code-owner review required."
+echo "Done. Required checks: schema, brand-lint, classify, gate. Approval enforced by the gate check."

@@ -16,6 +16,7 @@ permissions:
   contents: read
   pull-requests: write
   checks: write
+  statuses: write
 
 jobs:
   changed:
@@ -121,3 +122,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GOVERNANCE_APP_TOKEN || secrets.GITHUB_TOKEN }}
         run: gh pr merge ${{ github.event.pull_request.number }} --auto --squash || echo "auto-merge unavailable (needs bypass actor / repo setting)"
+
+      - name: Set gate status (label events from GITHUB_TOKEN don't re-trigger gate.yml)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tier = '${{ steps.tier.outputs.tier }}';
+            const { owner, repo } = context.repo; const pr = context.payload.pull_request;
+            let state = 'success', description = 'auto-tier: no human review required';
+            if (tier !== 'auto') {
+              const { data: reviews } = await github.rest.pulls.listReviews({ owner, repo, pull_number: pr.number });
+              const latest = {}; for (const r of reviews) if (r.user.login !== pr.user.login) latest[r.user.login] = r.state;
+              const approved = Object.values(latest).includes('APPROVED');
+              state = approved ? 'success' : 'failure';
+              description = approved ? `${tier}-tier: approved by a reviewer` : `${tier}-tier: needs an approving review from a reviewer`;
+            }
+            await github.rest.repos.createCommitStatus({ owner, repo, sha: pr.head.sha, state, context: 'gate', description });

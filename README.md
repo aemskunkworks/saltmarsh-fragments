@@ -70,14 +70,14 @@ Scenarios verified locally:
 | "proven superior to Rinvoq for RA patients" + wrong safety statement | brand-lint **fails** with five exact violations |
 | Efficacy claim citing only the PI | brand-lint **fails**: needs a pivotal-trial reference |
 
-## Setup on GitHub
+## Setup on GitHub (personal account, no GitHub App)
 
-1. Create teams named in `.github/CODEOWNERS` (`@saltmarsh/mlr-review`, `@saltmarsh/medical-affairs`, `@saltmarsh/platform`) or edit the slugs.
-2. Create a GitHub App ("fragments governance bot") with contents + pull_requests write; install on the repo; store an installation token as `GOVERNANCE_APP_TOKEN`. This lets auto-tier PRs merge without a human and is what the DA plugin will call.
-3. `scripts/apply-branch-rules.sh <owner>/<repo> <app-id>` applies the ruleset with the bot as a `pull_request` bypass actor.
-4. Repo settings → allow auto-merge.
-5. Variables `DA_ORG`, `DA_REPO`; secret `DA_IMS_TOKEN` (expires ~daily).
-6. Point the Express add-on at `POST /repos/{owner}/{repo}/dispatches` with `event_type: fragment.submitted`.
+1. Repo must be **public** for branch rulesets on a personal account (data is fictional).
+2. Add `lisamarie-13` as a collaborator (the reviewer); `aemskunkworks` owns the repo and authors PRs.
+3. Create a fine-grained PAT on `aemskunkworks` with Contents + Pull requests read/write on this repo; store it as the secret `GOVERNANCE_APP_TOKEN`. The ingest workflow uses it so merges trigger `publish.yml` (pushes made with the default `GITHUB_TOKEN` don't trigger workflows).
+4. Repo settings → General → **Allow auto-merge**.
+5. `scripts/apply-branch-rules.sh aemskunkworks/saltmarsh-fragments` → required checks `schema`, `brand-lint`, `classify`, `gate`; no review rule (the `gate` check enforces approval for human/regulated tiers).
+6. Variables `DA_ORG=aemskunkworks`, `DA_REPO=tarnexa-demo`; secret `DA_IMS_TOKEN` when you wire publishing.
 
 ## Identity
 
