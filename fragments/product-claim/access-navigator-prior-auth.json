@@ -23,7 +23,7 @@
     "referenceIds": ["REF-008", "REF-003"],
     "safetyStatementId": "isi-brief",
     "fairBalanceText": "Tarnexa is indicated for adults with moderately to severely active rheumatoid arthritis who have had an inadequate response or intolerance to one or more TNF inhibitors. Boxed warning: serious infections, mortality, malignancy, major adverse cardiovascular events, thrombosis. See full Prescribing Information.",
-    "ctaLabel": "Enroll a patient",
+    "ctaLabel": "Enroll a patient today",
     "ctaUrl": "https://hcp.saltmarshtx.example/tarnexa/access-navigator",
     "mslTalkingPoints": [
       "Copay program is commercial-only; government-insured patients are not eligible",
