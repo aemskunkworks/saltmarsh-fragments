@@ -29,9 +29,12 @@ for (const model of readdirSync(join(ROOT, "fragments"))) {
     const doc = JSON.parse(readFileSync(join(ROOT, "fragments", model, f), "utf8"));
     if (doc.effectiveFrom > today) { console.log(`  skip ${doc.id} (effectiveFrom ${doc.effectiveFrom} > today)`); continue; }
     if (doc.effectiveTo && doc.effectiveTo < today) { console.log(`  skip ${doc.id} (expired)`); continue; }
-    rows.push(flatten({ id: doc.id, effectiveFrom: doc.effectiveFrom, effectiveTo: doc.effectiveTo, ...doc.content, attributes: doc.attributes }));
+    rows.push(flatten({ id: doc.id, effectiveFrom: doc.effectiveFrom, effectiveTo: doc.effectiveTo, scope: doc.scope, content: doc.content, attributes: doc.attributes }));
   }
-  const sheet = { total: rows.length, offset: 0, limit: rows.length, data: rows, ":type": "sheet" };
+  // Every row must carry the same columns in the same order, or the sheet misaligns rows with fewer keys.
+  const columns = [...new Set(rows.flatMap((r) => Object.keys(r)))];
+  const normalized = rows.map((r) => Object.fromEntries(columns.map((k) => [k, r[k] ?? ""])));
+  const sheet = { total: normalized.length, offset: 0, limit: normalized.length, data: normalized, ":type": "sheet" };
   console.log(`[dry-run] would PUT /source/${process.env.DA_ORG ?? "{org}"}/${process.env.DA_REPO ?? "{repo}"}/fragments/${model}.json with ${rows.length} rows`);
   if (process.env.PUBLISH_DEBUG) console.log(JSON.stringify(sheet, null, 2));
 }
@@ -41,7 +44,8 @@ function flatten(obj, prefix = "", out = {}) {
   for (const [k, v] of Object.entries(obj)) {
     const key = prefix ? `${prefix}.${k}` : k;
     if (v && typeof v === "object" && !Array.isArray(v)) flatten(v, key, out);
-    else out[key] = Array.isArray(v) ? v.join(" | ") : v ?? "";
+    else if (Array.isArray(v)) out[key] = v.length && typeof v[0] === "object" ? JSON.stringify(v) : v.join(" | ");
+    else out[key] = v ?? "";
   }
   return out;
 }

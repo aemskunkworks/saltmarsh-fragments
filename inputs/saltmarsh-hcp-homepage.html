@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarnexa (quilvecitinib) for HCPs | Saltmarsh Therapeutics</title>
+<meta name="description" content="Tarnexa (quilvecitinib) is an oral selective JAK1 inhibitor for adults with moderately to severely active rheumatoid arthritis after an inadequate response or intolerance to one or more TNF inhibitors. For US healthcare professionals.">
+<!-- stardust:provenance
+  brand: Saltmarsh Therapeutics · product: Tarnexa (quilvecitinib)
+  role: canonical brand source (voice + design tokens) for the tarnexa-demo EDS site
+  data: FICTIONAL DEMO DATA — every trial, figure, reference and person is invented
+  generator: claude@2026-10-11 · intended for Stardust Stage 1 brand audit → brand-profile.json
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Saltmarsh design tokens. These are the values brand-profile.json locks. */
+  :root {
+    --tide: #2B4C5C;        /* primary: deep tidal slate */
+    --tide-deep: #1D3541;
+    --marsh: #8A9A5B;       /* accent: marsh grass, used once per view */
+    --marsh-soft: #E4E8D6;
+    --silt: #7A3B2E;        /* boxed warning / caution */
+    --ground: #F2F4F1;      /* page: pale lichen, cool not cream */
+    --paper: #FFFFFF;
+    --ink: #1C2226;
+    --ink-soft: #55615F;
+    --rule: #CBD2CF;
+    --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --measure: 68ch;
+    --gutter: clamp(16px, 4vw, 48px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-sans); font-size: 17px; line-height: 1.55; }
+  a { color: var(--tide); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--tide); outline-offset: 3px; }
+  h1, h2, h3 { font-family: var(--font-serif); font-weight: 500; line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+  h1 { font-size: clamp(2rem, 4.2vw, 3.1rem); }
+  h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0; max-width: var(--measure); }
+  .wrap { max-width: 1160px; margin: 0 auto; padding-inline: var(--gutter); }
+  .mono { font-family: var(--font-mono); font-size: 0.86rem; }
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--paper); padding: 8px 12px; }
+  .skip:focus { left: 8px; z-index: 100; }
+
+  /* demo notice — not brand, scaffolding */
+  .demo-note { background: var(--ink); color: var(--ground); font-size: 0.85rem; padding: 6px 0; }
+  .demo-note .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+  header.site { background: var(--paper); border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 20; }
+  header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+  .lockup { display: flex; align-items: baseline; gap: 14px; text-decoration: none; color: var(--ink); }
+  .lockup .product { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+  .lockup .generic { font-size: 0.95rem; color: var(--ink-soft); }
+  nav.primary ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; }
+  nav.primary a { text-decoration: none; font-weight: 500; font-size: 0.98rem; padding: 6px 0; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .lockup .generic { white-space: nowrap; }
+  @media (max-width: 1080px) { .lockup .generic { display: none; } }
+  nav.primary a:hover, nav.primary a[aria-current] { border-bottom-color: var(--marsh); }
+  .signed-in { font-size: 0.9rem; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  @media (max-width: 600px) { .signed-in { font-size: 0.82rem; } .signed-in .spec { display: none; } }
+  .signed-in b { color: var(--ink); font-weight: 500; }
+  @media (max-width: 820px) { nav.primary { display: none; } }
+
+  /* boxed warning: a box, because it is required to be one */
+  .boxed { margin: 28px auto 0; border: 2px solid var(--silt); background: var(--paper); }
+  .boxed summary { list-style: none; cursor: pointer; padding: 14px 18px; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .boxed summary::-webkit-details-marker { display: none; }
+  .boxed summary h2 { font-family: var(--font-sans); font-size: 0.95rem; font-weight: 600; color: var(--silt); letter-spacing: 0.01em; }
+  .boxed summary span { color: var(--ink-soft); font-size: 0.95rem; }
+  .boxed summary .toggle { margin-left: auto; font-size: 0.9rem; color: var(--tide); text-decoration: underline; }
+  .boxed[open] summary .toggle::after { content: "Collapse"; } .boxed summary .toggle::after { content: "Read the boxed warning"; }
+  .boxed .body { padding: 0 18px 18px; display: grid; gap: 12px; }
+  .boxed .body p { max-width: none; font-size: 0.97rem; }
+  .boxed .body strong { font-weight: 600; }
+
+  /* hero */
+  .hero { padding-block: 56px 48px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 32px; } }
+  .hero .indication { font-size: 1.05rem; color: var(--ink-soft); margin-top: 20px; }
+  .hero .indication b { color: var(--ink); font-weight: 500; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .btn { display: inline-block; padding: 12px 20px; border: 1.5px solid var(--tide); color: var(--tide); background: var(--paper); text-decoration: none; font-weight: 500; font-size: 0.98rem; }
+  .btn.primary { background: var(--tide); color: var(--paper); }
+  .btn:hover { background: var(--tide-deep); color: var(--paper); border-color: var(--tide-deep); }
+
+  /* paired bars, to scale */
+  figure.pair { margin: 0; background: var(--paper); border: 1px solid var(--rule); padding: 22px 24px 18px; }
+  figure.pair figcaption { font-size: 0.92rem; color: var(--ink-soft); margin-top: 14px; }
+  figure.pair .row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .bar { display: grid; grid-template-columns: 170px 1fr 56px; align-items: center; gap: 12px; font-size: 0.95rem; }
+  .bar .track { height: 18px; background: var(--ground); position: relative; }
+  .bar .fill { position: absolute; inset: 0 auto 0 0; background: var(--tide); }
+  .bar.placebo .fill { background: var(--rule); }
+  .bar .val { font-family: var(--font-mono); text-align: right; }
+  .bar .lab { color: var(--ink-soft); }
+  .bar .lab b { color: var(--ink); font-weight: 500; }
+  @media (max-width: 480px) { .bar { grid-template-columns: 1fr 56px; } .bar .lab { grid-column: 1 / -1; } }
+  .pval { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); margin-top: 10px; }
+
+  /* sections */
+  section.band { padding-block: 56px; border-top: 1px solid var(--rule); }
+  section.band .lede { margin-top: 12px; color: var(--ink-soft); font-size: 1.05rem; }
+  .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 40px; align-items: start; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* evidence ladder — the memorable element */
+  .ladder { list-style: none; margin: 32px 0 0; padding: 0; border-left: 3px solid var(--marsh); }
+  .ladder li { position: relative; padding: 0 0 0 28px; }
+  .ladder li + li { margin-top: 6px; }
+  .ladder li::before { content: ""; position: absolute; left: -8px; top: 22px; width: 13px; height: 13px; background: var(--ground); border: 3px solid var(--marsh); border-radius: 50%; }
+  .ladder details { background: var(--paper); border: 1px solid var(--rule); }
+  .ladder details[open] { border-color: var(--tide); }
+  .ladder summary { list-style: none; cursor: pointer; padding: 16px 18px; display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: baseline; }
+  .ladder summary::-webkit-details-marker { display: none; }
+  .ladder summary h3 { font-size: 1.1rem; }
+  .ladder summary .rung { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+  .ladder .content { padding: 0 18px 18px; display: grid; gap: 12px; }
+  .ladder .content p { max-width: none; font-size: 0.98rem; }
+  .ladder table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+  .ladder th, .ladder td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  .ladder th { font-weight: 600; font-size: 0.85rem; color: var(--ink-soft); }
+  .ladder td.num { font-family: var(--font-mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .ladder .ref { font-size: 0.85rem; color: var(--ink-soft); }
+  .ladder .content .btn { justify-self: start; }
+
+  /* mechanism */
+  .mech dl { display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; margin: 20px 0 0; font-size: 0.98rem; }
+  .mech dt { font-weight: 600; } .mech dd { margin: 0; color: var(--ink-soft); }
+
+  /* access */
+  .access ul { margin: 18px 0 0; padding-left: 1.1em; max-width: var(--measure); }
+  .access li + li { margin-top: 8px; }
+  .quiet-box { background: var(--marsh-soft); padding: 22px 24px; }
+  .quiet-box p { max-width: none; }
+
+  /* ISI */
+  .isi { background: var(--paper); border-top: 3px solid var(--silt); }
+  .isi h2 { font-family: var(--font-sans); font-size: 1.05rem; font-weight: 600; }
+  .isi .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; margin-top: 20px; }
+  @media (max-width: 820px) { .isi .cols { grid-template-columns: 1fr; } }
+  .isi h3 { font-family: var(--font-sans); font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+  .isi p { max-width: none; font-size: 0.95rem; }
+  .isi .block + .block { margin-top: 18px; }
+
+  .refs ol { margin: 16px 0 0; padding-left: 1.4em; font-size: 0.92rem; color: var(--ink-soft); max-width: 80ch; }
+  .refs li + li { margin-top: 6px; }
+
+  footer.site { background: var(--tide-deep); color: #D9E1E4; padding-block: 36px; font-size: 0.9rem; }
+  footer.site .wrap { display: grid; grid-template-columns: 1fr auto; gap: 20px 40px; align-items: end; }
+  footer.site a { color: #FFFFFF; }
+  footer.site .legal { max-width: 80ch; color: #B8C4C9; }
+  footer.site ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; padding: 0; }
+  @media (max-width: 720px) { footer.site .wrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="demo-note" role="note">
+  <div class="wrap"><span>Fictional product for a demonstration. Saltmarsh Therapeutics, Tarnexa and quilvecitinib do not exist; all data is invented.</span><span>For US healthcare professionals (simulated).</span></div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="lockup" href="/" aria-label="Tarnexa (quilvecitinib) home">
+      <span class="product">Tarnexa</span>
+      <span class="generic">quilvecitinib 15 mg tablets</span>
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="#efficacy" aria-current="page">Efficacy</a></li>
+        <li><a href="#safety">Safety</a></li>
+        <li><a href="#mechanism">Mechanism</a></li>
+        <li><a href="#access">Access</a></li>
+        <li><a href="/tarnexa/prescribing-information">Prescribing Information</a></li>
+      </ul>
+    </nav>
+    <div class="signed-in">Signed in as <b>Dr. Okafor-Lindqvist</b><span class="spec"> · Rheumatology</span></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+  <details class="boxed" id="boxed-warning">
+    <summary>
+      <h2>Boxed warning</h2>
+      <span>Serious infections · Mortality · Malignancy · Major adverse cardiovascular events · Thrombosis</span>
+      <span class="toggle" aria-hidden="true"></span>
+    </summary>
+    <div class="body">
+      <p><strong>Serious infections.</strong> Patients treated with Tarnexa are at increased risk for developing serious infections that may lead to hospitalization or death. Most patients who developed these infections were taking concomitant immunosuppressants. If a serious infection develops, interrupt Tarnexa until the infection is controlled. Test for latent tuberculosis before and during therapy.</p>
+      <p><strong>Mortality.</strong> In a large, randomized, postmarketing safety study of another JAK inhibitor in rheumatoid arthritis patients 50 years of age and older with at least one cardiovascular risk factor, a higher rate of all-cause mortality was observed compared with TNF blockers.</p>
+      <p><strong>Malignancies.</strong> Lymphoma and other malignancies have been observed in patients treated with JAK inhibitors. Current or past smokers are at additional increased risk.</p>
+      <p><strong>Major adverse cardiovascular events.</strong> Higher rates of MACE were observed with another JAK inhibitor compared with TNF blockers. Discontinue Tarnexa in patients who have experienced a myocardial infarction or stroke.</p>
+      <p><strong>Thrombosis.</strong> Thrombosis, including pulmonary embolism, deep venous thrombosis and arterial thrombosis, has occurred in patients treated with JAK inhibitors. Avoid Tarnexa in patients at risk.</p>
+      <p>See <a href="/tarnexa/prescribing-information">full Prescribing Information</a>, including Boxed Warning.</p>
+    </div>
+  </details>
+
+  <section class="hero" aria-labelledby="hero-h">
+    <div>
+      <h1 id="hero-h">After a TNF inhibitor, a different mechanism.</h1>
+      <p class="indication">Tarnexa is a once-daily oral selective JAK1 inhibitor indicated for <b>adults with moderately to severely active rheumatoid arthritis who have had an inadequate response or intolerance to one or more TNF inhibitors.</b> Use of Tarnexa in combination with other JAK inhibitors, biologic DMARDs, or potent immunosuppressants is not recommended.</p>
+      <div class="actions">
+        <a class="btn primary" href="#efficacy">Review the ESTUARY-1 data</a>
+        <a class="btn" href="#access">Access Navigator</a>
+      </div>
+    </div>
+    <figure class="pair" aria-labelledby="pair-cap">
+      <div class="row">
+        <div class="bar"><span class="lab"><b>Tarnexa 15 mg</b> + csDMARD</span><span class="track"><span class="fill" style="width:58%"></span></span><span class="val">58%</span></div>
+        <div class="bar placebo"><span class="lab">Placebo + csDMARD</span><span class="track"><span class="fill" style="width:29%"></span></span><span class="val">29%</span></div>
+      </div>
+      <div class="pval">ACR20 at week 24 · p&lt;0.001 · ESTUARY-1, n=612</div>
+      <figcaption id="pair-cap">Primary endpoint in adults with moderately to severely active RA and an inadequate response to one or more TNF inhibitors, on background csDMARD.<sup>1</sup></figcaption>
+    </figure>
+  </section>
+</div>
+
+<section class="band" id="efficacy" aria-labelledby="eff-h">
+  <div class="wrap two-col">
+    <div>
+      <h2 id="eff-h">Go as deep into the evidence as your question requires.</h2>
+      <p class="lede">The ESTUARY program studied Tarnexa in the population you are treating: patients for whom at least one TNF inhibitor was not enough. Each step below adds detail; stop where your question is answered.</p>
+    </div>
+    <ol class="ladder" aria-label="Evidence, from summary to source">
+      <li><details open data-rung="1"><summary><h3>What the pivotal trial showed</h3><span class="rung">Summary</span></summary>
+        <div class="content">
+          <p>In ESTUARY-1, 58% of patients receiving Tarnexa 15 mg once daily plus background csDMARD achieved ACR20 at week 24 vs 29% with placebo plus csDMARD (p&lt;0.001). ACR50 was achieved by 34% vs 13%.<sup>1</sup></p>
+        </div></details></li>
+      <li><details data-rung="2"><summary><h3>Trial design and endpoints</h3><span class="rung">Pivotal data</span></summary>
+        <div class="content">
+          <p>ESTUARY-1 was a 52-week, randomized, double-blind, placebo-controlled phase 3 trial (N=612) in adults with moderately to severely active RA and an inadequate response to one or more TNF inhibitors, on stable background csDMARD. Primary endpoint: ACR20 at week 24. Key secondary endpoints: ACR50, ACR70, change in DAS28-CRP, change in HAQ-DI.<sup>1</sup></p>
+          <table><thead><tr><th>Week 24</th><th>Tarnexa 15 mg (n=306)</th><th>Placebo (n=306)</th></tr></thead>
+          <tbody>
+            <tr><td>ACR20</td><td class="num">58%</td><td class="num">29%</td></tr>
+            <tr><td>ACR50</td><td class="num">34%</td><td class="num">13%</td></tr>
+            <tr><td>ACR70</td><td class="num">17%</td><td class="num">5%</td></tr>
+            <tr><td>DAS28-CRP, mean change</td><td class="num">−2.1</td><td class="num">−0.9</td></tr>
+          </tbody></table>
+          <p class="ref">All comparisons p&lt;0.001. Background csDMARD was methotrexate in 81% of patients.<sup>1</sup></p>
+        </div></details></li>
+      <li><details data-rung="3"><summary><h3>Patients who had failed two or more TNF inhibitors</h3><span class="rung">Prespecified subgroup</span></summary>
+        <div class="content">
+          <p>In the prespecified subgroup with an inadequate response to two or more prior TNF inhibitors (n=203), ACR20 at week 24 was 51% with Tarnexa vs 24% with placebo. Response was consistent regardless of the reason for prior TNF discontinuation (primary non-response, secondary loss of response, or intolerance).<sup>5</sup></p>
+          <p class="ref">Subgroup analyses were not powered for formal hypothesis testing and are descriptive.</p>
+        </div></details></li>
+      <li><details data-rung="4"><summary><h3>Adverse reactions in the integrated safety population</h3><span class="rung">Safety tables</span></summary>
+        <div class="content">
+          <p>Across ESTUARY-1, ESTUARY-2 and the long-term extension (1,004 patients, 1,612 patient-years), the most common adverse reactions (≥5%) were upper respiratory tract infection, nasopharyngitis, headache and increased blood creatine phosphokinase. Serious infections occurred at 2.9 per 100 patient-years; herpes zoster at 3.4 per 100 patient-years.<sup>3,4</sup></p>
+          <p class="ref">See the Boxed Warning and the full Prescribing Information for warnings and precautions.</p>
+        </div></details></li>
+      <li><details data-rung="5"><summary><h3>Persistence after switching from a TNF inhibitor</h3><span class="rung">Real-world evidence</span></summary>
+        <div class="content">
+          <p>In an interim analysis of the TIDELINE registry (1,280 patients initiating Tarnexa after a TNF inhibitor; 18 months), 71% remained on therapy at 12 months. Registry data are observational and subject to confounding; they do not establish efficacy.<sup>6</sup></p>
+        </div></details></li>
+      <li><details data-rung="6"><summary><h3>Talk to a Medical Science Liaison</h3><span class="rung">Request</span></summary>
+        <div class="content">
+          <p>For questions not answered here, including unpublished analyses and off-label inquiries, request a conversation with a Saltmarsh MSL. Responses to unsolicited medical requests are handled by Medical Affairs, not commercial teams.</p>
+          <a class="btn" href="/medical/request">Request an MSL conversation</a>
+        </div></details></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band mech" id="mechanism" aria-labelledby="mech-h">
+  <div class="wrap two-col">
+    <div><h2 id="mech-h">Selective for JAK1 in cellular assays.</h2>
+      <p class="lede">Quilvecitinib preferentially inhibits JAK1 relative to JAK2, JAK3 and TYK2 in cellular assays. The clinical relevance of selectivity has not been established.<sup>7</sup></p></div>
+    <dl>
+      <dt>Target</dt><dd>Janus kinase 1 (JAK1); modulates signaling of IL-6, interferons and γ-chain cytokines implicated in RA.</dd>
+      <dt>Dosing</dt><dd>15 mg orally once daily, with or without food. May be used with csDMARDs or as monotherapy.<sup>3</sup></dd>
+      <dt>Before starting</dt><dd>Test for latent TB; check CBC, lipids and liver enzymes; update vaccinations. Avoid live vaccines during treatment.<sup>3</sup></dd>
+      <dt>Not recommended</dt><dd>With other JAK inhibitors, biologic DMARDs, or potent immunosuppressants such as azathioprine and cyclosporine.<sup>3</sup></dd>
+    </dl>
+  </div>
+</section>
+
+<section class="band access" id="access" aria-labelledby="acc-h">
+  <div class="wrap two-col">
+    <div><h2 id="acc-h">Saltmarsh Access Navigator takes the paperwork.</h2>
+      <p class="lede">Most plans require documented prior TNF inhibitor use before covering Tarnexa. Navigator submits that documentation with your prior authorization so your staff doesn't.</p>
+      <ul>
+        <li>Benefits verification within one business day</li>
+        <li>Prior authorization and appeals support, including step-therapy documentation</li>
+        <li>Copay program for commercially insured eligible patients; government-insured patients are not eligible</li>
+        <li>Specialty pharmacy coordination and refill reminders your patient opts into</li>
+      </ul>
+      <div class="actions" style="margin-top:24px"><a class="btn primary" href="/tarnexa/access-navigator">Enroll a patient</a></div>
+    </div>
+    <div class="quiet-box">
+      <h3>What to have ready</h3>
+      <p style="margin-top:10px">Patient's insurance card, the names and dates of prior TNF inhibitors, most recent disease activity score, and TB test date. Program terms and eligibility criteria apply.<sup>8</sup></p>
+    </div>
+  </div>
+</section>
+
+<section class="band isi" id="safety" aria-labelledby="isi-h">
+  <div class="wrap">
+    <h2 id="isi-h">Important Safety Information</h2>
+    <div class="cols">
+      <div>
+        <div class="block"><h3>Boxed warning</h3><p>Serious infections, mortality, malignancy, major adverse cardiovascular events, and thrombosis. See the <a href="#boxed-warning">Boxed Warning</a> above and the full Prescribing Information.</p></div>
+        <div class="block"><h3>Hypersensitivity</h3><p>Tarnexa is contraindicated in patients with known hypersensitivity to quilvecitinib or any excipient. Angioedema and urticaria have been reported.</p></div>
+        <div class="block"><h3>Gastrointestinal perforations</h3><p>Use with caution in patients at increased risk, including those with a history of diverticulitis or taking NSAIDs or corticosteroids.</p></div>
+        <div class="block"><h3>Laboratory abnormalities</h3><p>Neutropenia, lymphopenia, anemia, lipid elevations and liver enzyme elevations have been observed. Monitor per the Prescribing Information; interrupt treatment as directed.</p></div>
+      </div>
+      <div>
+        <div class="block"><h3>Vaccinations</h3><p>Avoid live vaccines immediately before and during treatment. Update immunizations in agreement with current guidelines before initiating.</p></div>
+        <div class="block"><h3>Embryo-fetal toxicity</h3><p>Based on animal data, Tarnexa may cause fetal harm. Advise patients of reproductive potential to use effective contraception during treatment and for 4 weeks after the final dose.</p></div>
+        <div class="block"><h3>Most common adverse reactions (≥5%)</h3><p>Upper respiratory tract infection, nasopharyngitis, headache, increased blood creatine phosphokinase.</p></div>
+        <div class="block"><h3>Indication</h3><p>Tarnexa is indicated for adults with moderately to severely active rheumatoid arthritis who have had an inadequate response or intolerance to one or more TNF inhibitors. Use in combination with other JAK inhibitors, biologic DMARDs, or potent immunosuppressants is not recommended.</p></div>
+        <div class="block"><p><a href="/tarnexa/prescribing-information">See full Prescribing Information, including Boxed Warning.</a> To report suspected adverse reactions, contact Saltmarsh Therapeutics at 1-800-555-0199 (fictional) or FDA at 1-800-FDA-1088 / www.fda.gov/medwatch.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band refs" aria-labelledby="refs-h">
+  <div class="wrap">
+    <h2 id="refs-h" style="font-family:var(--font-sans);font-size:1.05rem;font-weight:600">References (fictional)</h2>
+    <ol>
+      <li>ESTUARY-1. Phase 3, randomized, double-blind, placebo-controlled trial of quilvecitinib in adults with RA and inadequate response to ≥1 TNF inhibitor, on background csDMARD. 52 weeks. N=612. Data on file, Saltmarsh Therapeutics.</li>
+      <li>ESTUARY-2. Phase 3, randomized, double-blind, placebo-controlled trial of quilvecitinib monotherapy in TNF-IR adults. 24 weeks. N=418. Data on file.</li>
+      <li>Tarnexa (quilvecitinib) Prescribing Information. Saltmarsh Therapeutics; 2026.</li>
+      <li>Integrated safety analysis, ESTUARY-1, ESTUARY-2 and long-term extension. 1,004 patients; 1,612 patient-years. Data on file.</li>
+      <li>ESTUARY-1 prespecified subgroup analysis: inadequate response to ≥2 prior TNF inhibitors (n=203). Data on file.</li>
+      <li>TIDELINE registry interim analysis, 18 months. 1,280 patients initiating quilvecitinib after a TNF inhibitor. Data on file.</li>
+      <li>Selectivity profile of quilvecitinib across JAK1/2/3 and TYK2 in cellular assays. Data on file.</li>
+      <li>Saltmarsh Access Navigator program description and coverage summary, Q4 2026.</li>
+    </ol>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div>
+      <ul>
+        <li><a href="/tarnexa/prescribing-information">Prescribing Information</a></li>
+        <li><a href="/medical/request">Medical information</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms of use</a></li>
+        <li><a href="/sign-out">Sign out</a></li>
+      </ul>
+      <p class="legal">This site is intended for US healthcare professionals. Saltmarsh Therapeutics, Portland, Maine. Tarnexa is a trademark of Saltmarsh Therapeutics. Everything on this page is fictional and created for a technology demonstration; no product, trial, person or figure described here exists.</p>
+    </div>
+    <div class="mono">US-TAR-26-0001 · 10/2026</div>
+  </div>
+</footer>
+
+<script>
+  // Data layer seed: the evidence ladder is the Audience of One item. Each rung opened is an observation.
+  window.adobeDataLayer = window.adobeDataLayer || [];
+  document.querySelectorAll('.ladder details').forEach((d) => {
+    d.addEventListener('toggle', () => {
+      if (!d.open) return;
+      window.adobeDataLayer.push({
+        event: 'fragment.engaged',
+        fragment: { id: 'acr20-week24-tnf-ir', model: 'product-claim' },
+        evidence: { depth: Number(d.dataset.rung) },
+        hcp: { authenticated: true, specialty: 'rheumatology' }
+      });
+    });
+  });
+</script>
+</body>
+</html>
