@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   gate:
-    name: gate
+    name: gate-runner
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
