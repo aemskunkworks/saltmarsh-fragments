@@ -19,10 +19,10 @@
   "content": {
     "headline": "After a TNF inhibitor, a different mechanism",
     "lede": "For your patients with moderately to severely active rheumatoid arthritis who have had an inadequate response to one or more TNF inhibitors, Tarnexa offers a once-daily oral option with a selective JAK1 mechanism.",
-    "claimText": "In ESTUARY-1, 58% of patients receiving Tarnexa 15 mg once daily plus background csDMARD achieved ACR20 at week 24 vs 29% with placebo plus csDMARD (p<0.001). ACR50 was achieved by 34% vs 13%.",
+    "claimText": "In ESTUARY-1, 61% of patients receiving Tarnexa 15 mg once daily plus background csDMARD achieved ACR20 at week 24 vs 29% with placebo plus csDMARD (p<0.001). ACR50 was achieved by 34% vs 13%.",
     "referenceIds": ["REF-001", "REF-003"],
     "dataPoints": [
-      { "label": "ACR20, Tarnexa 15 mg", "value": "58%", "timepoint": "week 24", "referenceId": "REF-001" },
+      { "label": "ACR20, Tarnexa 15 mg", "value": "61%", "timepoint": "week 24", "referenceId": "REF-001" },
       { "label": "ACR20, placebo", "value": "29%", "timepoint": "week 24", "referenceId": "REF-001" },
       { "label": "ACR50, Tarnexa 15 mg", "value": "34%", "timepoint": "week 24", "referenceId": "REF-001" },
       { "label": "ACR50, placebo", "value": "13%", "timepoint": "week 24", "referenceId": "REF-001" }
